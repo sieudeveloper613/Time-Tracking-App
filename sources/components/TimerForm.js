@@ -1,59 +1,33 @@
-import { StyleSheet, Text, View, TextInput } from 'react-native'
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useState } from "react"
+import { StyleSheet, Text, View, TextInput } from "react-native"
 
-// import another components
-import TimerButton from './TimerButton';
+/* components */
+import TimerButton from "./TimerButton";
 
-export default class TimerForm extends React.Component {
-  constructor(props){
-    super(props);
+/* modules */
+import PropTypes from "prop-types"
 
-    const { id, title, project } = props;
+const TimerForm = ({ id, title: initialTitle, project: initialProject, onFormSubmit, onFormClose }) => {
+    /* create state */
+    const [title, setTitle] = useState(id ? initialTitle : "");
+    const [project, setProject] = useState(id ? initialProject : "");
 
-    this.state = {
-        title: id ? title : '',
-        project: id ? project : '',
-    };
-  }
+    const submitText = id ? "Update" : "Create";
 
-  static propTypes = {
-    id: PropTypes.string,
-    title: PropTypes.string,
-    project: PropTypes.string,
-    onFormSubmit: PropTypes.func.isRequired,
-    onFormClose: PropTypes.func.isRequired,
-    };
-    
-    static defaultProps = {
-    id: null,
-    title: '',
-    project: '',
-    };
+    /* function: handle change title */
+    const handleTitleChange = (newTitle) => {
+        setTitle(newTitle);
+    }
 
-  handleTitleChange = title => {
-    this.setState({ title });
-  }
+    /* function: handle change project name */
+    const handleProjectChange = (newProject) => {
+        setProject(newProject);
+    }
 
-  handleProjectChange = project => {
-    this.setState({ project });
-  }
-
-  handleSubmit = () => {
-    const { onFormSubmit, id } = this.props;
-    const { title, project } = this.state;
-
-    onFormSubmit({
-      id,
-      title,
-      project,
-    });
-  };
-
-  render(){
-    const { id, onFormClose } = this.props;
-    const { title, project } = this.state;
-    const submitText = id ? 'Update' : 'Create';
+    /* function: handle state when submitting  */
+    const handleSubmit = () => {
+        return onFormSubmit({ id, title, project });
+    }
 
     return (
         <View style={styles.formContainer}>
@@ -64,8 +38,7 @@ export default class TimerForm extends React.Component {
                         style={styles.textInput}
                         underlineColorAndroid="transparent"
                         value={title}
-                        onChangeText={this.handleTitleChange}
-                        // defaultValue={this.state.title} //initialize the field with current value
+                        onChangeText={handleTitleChange}
                     />
                 </View>
             </View>
@@ -77,8 +50,7 @@ export default class TimerForm extends React.Component {
                         style={styles.textInput}
                         underlineColorAndroid="transparent"
                         value={project}
-                        onChangeText={this.handleProjectChange}
-                        // defaultValue={project} //initialize the field with current value
+                        onChangeText={handleProjectChange}
                     />
                 </View>
             </View>
@@ -88,7 +60,7 @@ export default class TimerForm extends React.Component {
                     small 
                     color="#21BA45" 
                     title={submitText} 
-                    onPress={this.handleSubmit}
+                    onPress={handleSubmit}
                 />
                 <TimerButton 
                     small 
@@ -98,16 +70,23 @@ export default class TimerForm extends React.Component {
                 />
             </View>
         </View>
-      )
-  }
-
-  
+    )
 }
+
+export default TimerForm;
+
+TimerForm.propTypes = {
+    id: PropTypes.string,
+    title: PropTypes.string,
+    project: PropTypes.string,
+    onFormSubmit: PropTypes.func.isRequired,
+    onFormClose: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
     formContainer: {
-        backgroundColor: 'white',
-        borderColor: '#D6D7DA',
+        backgroundColor: "white",
+        borderColor: "#D6D7DA",
         borderWidth: 2,
         borderRadius: 10,
         padding: 15,
@@ -118,7 +97,7 @@ const styles = StyleSheet.create({
         marginVertical: 8,
     },
     textInputContainer: {
-        borderColor: '#D6D7DA',
+        borderColor: "#D6D7DA",
         borderRadius: 2,
         borderWidth: 1,
         marginBottom: 5,
@@ -130,11 +109,11 @@ const styles = StyleSheet.create({
     },
     textInputTitle: {
         fontSize: 14,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         marginBottom: 5,
     },
     buttonGroup: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
 });
